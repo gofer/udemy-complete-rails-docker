@@ -1,0 +1,29 @@
+{
+  "name": "The Complete Ruby on Rails Developer Course",
+  "dockerComposeFile": "../docker/docker-compose.yml",
+  "service": "app",
+  "shutdownAction": "stopCompose",
+  "workspaceFolder": "/home/user/workspaces",
+  "remoteUser": "user",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "kesmarag.adwaita-base16",
+        "mikestead.dotenv",
+        "shopify.ruby-extensions-pack",
+        "hridoy.rails-snippets",
+        "noku.rails-run-spec-vscode"
+      ],
+      "settings": {
+        "workbench.colorTheme": "Adwaita Base16",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/zsh",
+            "args": ["-l"]
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  }
+}

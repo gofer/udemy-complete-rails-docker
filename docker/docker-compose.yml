@@ -1,0 +1,49 @@
+services:
+  app:
+    container_name: udemy-rails-app
+    hostname: app.udemy-rails.apps.localdomain
+    build:
+      context: app
+      dockerfile: Dockerfile
+      args:
+        - locale=ja_JP.UTF-8
+        - tz='Asia/Tokyo'
+        - git_user_name=Gofer
+        - git_user_email=gofer@ex-studio.info
+        - username=user
+        - password=password
+        - ruby_version=3.1.2
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+      - mail
+    volumes:
+      - app:/home/user/workspaces
+  db:
+    container_name: udemy-rails-db
+    hostname: db.udemy-rails.apps.localdomain
+    image: postgres:latest
+    env_file:
+      - postgresql.env
+    secrets:
+      - postgres-password
+      - postgres-db
+    volumes:
+      - db:/var/lib/postgresql/data
+  mail:
+    container_name: udemy-rails-mail
+    hostname: mail.udemy-rails.apps.localdomain
+    build:
+      context: mail
+      dockerfile: Dockerfile
+
+volumes:
+  app:
+  db:
+
+secrets:
+  postgres-password:
+    file: .secrets/postgres-password
+  postgres-db:
+    file: .secrets/postgres-db

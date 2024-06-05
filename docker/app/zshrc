@@ -1,0 +1,133 @@
+################################################################################
+# キーボード設定
+################################################################################
+
+[[ -f $HOME/.zshkbd ]] && source $HOME/.zshkbd
+
+
+################################################################################
+# zinit
+################################################################################
+
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+
+################################################################################
+# zinit plugins
+################################################################################
+
+# シンタックスハイライト
+zinit light zdharma-continuum/fast-syntax-highlighting
+# zinit light zsh-users/zsh-syntax-highlighting
+
+# 入力候補サジェスト
+zinit light zsh-users/zsh-autosuggestions
+
+# 入力補完
+zinit light zsh-users/zsh-completions
+
+# コマンド履歴検索
+zinit light zdharma/history-search-multi-word
+
+
+################################################################################
+# skimで入力履歴検索
+################################################################################
+
+function skim-history-selection() {
+  BUFFER=`history -n 1 | tac | sk`
+  CURSOR=$#BUFFER
+  zle reset-prompt
+}
+
+zle -N skim-history-selection
+bindkey '^R' skim-history-selection
+
+
+################################################################################
+# skimでcd
+################################################################################
+
+function skim-current-directory() {
+  echo "args = '$@'"
+  if [ "$@" = '' ]; then
+    builtin cd $(find . -maxdepth 1 -type d | sed -E 's/^\.\///g' | sort | sk)
+  else
+    builtin cd "$@"
+  fi
+}
+
+alias cd=skim-current-directory
+
+
+################################################################################
+# Load powerlevel10k theme
+################################################################################
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+zinit ice depth"1" # git clone depth
+
+zinit light romkatv/powerlevel10k
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
+################################################################################
+# compinit
+################################################################################
+
+autoload -Uz compinit && compinit
+
+
+################################################################################
+# nvm
+################################################################################
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+
+################################################################################
+# gem
+################################################################################
+
+export GEM_HOME=$HOME/.gem
+# export PATH=$GEM_HOME/bin:$PATH
+
+
+################################################################################
+# aliases
+################################################################################
+
+alias ls='lsd --human-readable --almost-all'
+alias ll='ls --long'
+alias lst='ls --tree --depth=1'
+alias cat='bat'
+alias ps='procs'
+function __silicon-internal() {
+  n="${#@}"
+  file=${@[n]}
+  args=($@[1,-2])
+  
+  if [[ ! "$args[@]" =~ '-f' ]] && [[ ! "$args[@]" =~ '--font' ]]; then
+    args=(${args[@]} -f "Cica")
+  fi
+  
+  if [[ ! "$args[@]" =~ '-o' ]] && [[ ! "$args[@]" =~ '--output' ]]; then
+    args=(${args[@]} -o "$file.png")
+  fi
+  
+  =silicon $args $file       
+}
+alias silicon='silicon -f "Cica"'
+alias sk='sk --regex'
