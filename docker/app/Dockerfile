@@ -39,7 +39,7 @@ RUN apt install -y ${shell} \
  && echo "${username} ALL=(ALL) ALL" > /etc/sudoers.d/${username} \
  && echo "${username}:${password}" | chpasswd
 
-RUN apt install -y awscli curl fonts-noto fontconfig-config git jq neovim rbenv tmux
+RUN apt install -y awscli build-essential curl fonts-noto fontconfig-config git jq neovim rbenv ruby-dev tmux
 
 USER ${username}
 
