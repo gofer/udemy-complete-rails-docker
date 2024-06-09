@@ -102,7 +102,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 ################################################################################
 
 export GEM_HOME=$HOME/.gem
-# export PATH=$GEM_HOME/bin:$PATH
+export PATH=$GEM_HOME/bin:$PATH
 
 
 ################################################################################
